@@ -8,8 +8,8 @@ import akka.actor.{ActorRef, ActorSystem, Props}
 
 object MyFrame extends SimpleSwingApplication {
   val system = ActorSystem("HelloSystem")
-  val width = 79
-  val length = 79
+  val width = 39
+  val length = 39
   override def top = new MainFrame {
     title = "Game Of Life"
     var value = true
@@ -29,11 +29,11 @@ object MyFrame extends SimpleSwingApplication {
 
       actorMap.foreach { case (point, actor) =>
         val neighbors = getNeighbors(point, actorMap)
-        println(s"Neighbors for $point are $neighbors")
+        //println(s"Neighbors for $point are $neighbors")
         actor ! AssignNeighbors(neighbors)
       }
 
-      Thread.sleep(500)
+      //Thread.sleep(500)
       system.actorOf(Props(ControllerActor(actorMap.values.toList)))
     }
 
@@ -67,21 +67,3 @@ object MyFrame extends SimpleSwingApplication {
   }
 
 }
-
-
-
-
-
-sealed trait Message
-
-final case class CalculateNextState() extends Message
-final case class CalculateNextStateReady() extends Message
-
-final case class SwitchToNextState() extends Message
-final case class SwitchToNextStateReady() extends Message
-
-final case class AssignNeighbors(neighbors: List[ActorRef]) extends Message
-final case class AssignNeighborsReady() extends Message
-
-final case class DoYouHaveLife() extends Message
-final case class DoYouHaveLifeAnswer(life: Boolean) extends Message

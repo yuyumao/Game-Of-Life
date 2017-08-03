@@ -23,12 +23,12 @@ final case class GridActor(co: Point, grid: Grid) extends Actor {
       sender ! SwitchToNextStateReady()
     case AssignNeighbors(nei) =>
       neighbors = nei
-    case aa =>
-      println("Error "+ aa)
+    case other =>
+      println("Error "+ other)
       throw new RuntimeException("Unknown Command")
   }
 
-  def workOutNextState = {
+  def workOutNextState: Boolean = {
     val lifes = answers.count(a => a)
     grid.hasLife match {
       case true if lifes < 2 => false

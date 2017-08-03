@@ -8,16 +8,14 @@ final case class Grid(point: Point, initLife: Boolean) extends Panel {
 
   def hasLife: Boolean = life
   def setLife(value: Boolean): Unit = {
-    println("Setting lif to : " + value)
     life = value
     updateColor()
   }
   def updateColor(): Unit = {
-    life match {
-      case true => background = Color.BLACK
-      case false => background = Color.PINK
+    if(hasLife) {
+      background = Color.BLACK
+    } else {
+      background = Color.PINK
     }
   }
-
-
 }

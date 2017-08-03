@@ -11,7 +11,7 @@ final case class ControllerActor(actorList: List[ActorRef]) extends Actor {
   override def receive: Receive = {
     case CalculateNextStateReady() =>
       readyGrid += 1
-      println("CalculateNextStateReady: " + readyGrid  + " Size: " + actorList.size)
+      //println("CalculateNextStateReady: " + readyGrid  + " Size: " + actorList.size)
       if(readyGrid == actorList.size) {
         actorList.foreach { actor =>
           actor ! SwitchToNextState()
