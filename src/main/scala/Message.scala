@@ -13,3 +13,6 @@ final case class AssignNeighborsReady() extends Message
 
 final case class DoYouHaveLife() extends Message
 final case class DoYouHaveLifeAnswer(life: Boolean) extends Message
+
+final case class StartSystem() extends Message
+final case class StopSystem() extends Message

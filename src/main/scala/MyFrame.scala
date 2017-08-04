@@ -4,24 +4,43 @@
 
 import swing._
 import java.awt.Point
+
 import akka.actor.{ActorRef, ActorSystem, Props}
+import scala.swing.BorderPanel.Position.{Center, South}
+import scala.swing.event.ButtonClicked
 
 object MyFrame extends SimpleSwingApplication {
   val system = ActorSystem("HelloSystem")
-  val width = 39
-  val length = 39
+  val width = 70
+  val length = 70
+  var controllerActor: ActorRef = null
+
   override def top = new MainFrame {
     title = "Game Of Life"
     var value = true
-    var count = 0
-    contents = new GridPanel(width, length) {
+
+    val startButton = new Button {
+      text = "Start"
+      reactions += {
+        case ButtonClicked(_) =>
+          controllerActor ! StartSystem()
+      }
+    }
+
+    val stopButton = new Button {
+      text = "Stop"
+      reactions += {
+        case ButtonClicked(_) =>
+          controllerActor ! StopSystem()
+      }
+    }
+
+    val centerPanel = new GridPanel(width, length) {
       val actorMap: Map[Point, ActorRef] = (1 to width).flatMap { x =>
         (1 to length).map { y =>
           val point = new Point(x, y)
-          println("Put " + point)
-          val grid = Grid(point, value)
+          val grid = Grid(point, initLife = false)
           contents += grid
-          count += 1
           value = !value
           (point, system.actorOf(Props(GridActor(point, grid))))
         }
@@ -29,12 +48,17 @@ object MyFrame extends SimpleSwingApplication {
 
       actorMap.foreach { case (point, actor) =>
         val neighbors = getNeighbors(point, actorMap)
-        //println(s"Neighbors for $point are $neighbors")
         actor ! AssignNeighbors(neighbors)
       }
+      controllerActor = system.actorOf(Props(ControllerActor(actorMap.values.toList)))
+    }
 
-      //Thread.sleep(500)
-      system.actorOf(Props(ControllerActor(actorMap.values.toList)))
+    contents = new BorderPanel {
+      layout(centerPanel) = Center
+      layout(new GridPanel(2, 1) {
+        contents += startButton
+        contents += stopButton
+      }) = South
     }
 
   }

@@ -1,6 +1,9 @@
 import java.awt.{Color, Point}
 
+import MyFrame.controllerActor
+
 import scala.swing.Panel
+import scala.swing.event.{ButtonClicked, MouseClicked}
 
 final case class Grid(point: Point, initLife: Boolean) extends Panel {
   private var life: Boolean = initLife
@@ -17,5 +20,12 @@ final case class Grid(point: Point, initLife: Boolean) extends Panel {
     } else {
       background = Color.PINK
     }
+  }
+
+  listenTo(mouse.clicks)
+  reactions += {
+    case e: MouseClicked =>
+      life = !life
+      updateColor()
   }
 }
