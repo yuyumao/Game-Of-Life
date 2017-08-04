@@ -1,14 +1,12 @@
 import java.awt.{Color, Point}
-
-import MyFrame.controllerActor
-
+import javax.swing.border.LineBorder
 import scala.swing.Panel
-import scala.swing.event.{ButtonClicked, MouseClicked}
+import scala.swing.event.MouseClicked
 
 final case class Grid(point: Point, initLife: Boolean) extends Panel {
   private var life: Boolean = initLife
+  border = new LineBorder(Color.GRAY)
   updateColor()
-
   def hasLife: Boolean = life
   def setLife(value: Boolean): Unit = {
     life = value
